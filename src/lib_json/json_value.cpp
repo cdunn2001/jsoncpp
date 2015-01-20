@@ -25,7 +25,7 @@
 
 namespace Json {
 
-class JSON_API Value {
+class ValImpl {
   friend class ValueIteratorBase;
 #ifdef JSON_VALUE_USE_INTERNAL_MAP
   friend class ValueInternalLink;
@@ -45,27 +45,27 @@ public:
   typedef Json::LargestUInt LargestUInt;
   typedef Json::ArrayIndex ArrayIndex;
 
-  static const Value& null;
-  /// Minimum signed integer value that can be stored in a Json::Value.
+  static const ValImpl& null;
+  /// Minimum signed integer value that can be stored in a Json::ValImpl.
   static const LargestInt minLargestInt;
-  /// Maximum signed integer value that can be stored in a Json::Value.
+  /// Maximum signed integer value that can be stored in a Json::ValImpl.
   static const LargestInt maxLargestInt;
-  /// Maximum unsigned integer value that can be stored in a Json::Value.
+  /// Maximum unsigned integer value that can be stored in a Json::ValImpl.
   static const LargestUInt maxLargestUInt;
 
-  /// Minimum signed int value that can be stored in a Json::Value.
+  /// Minimum signed int value that can be stored in a Json::ValImpl.
   static const Int minInt;
-  /// Maximum signed int value that can be stored in a Json::Value.
+  /// Maximum signed int value that can be stored in a Json::ValImpl.
   static const Int maxInt;
-  /// Maximum unsigned int value that can be stored in a Json::Value.
+  /// Maximum unsigned int value that can be stored in a Json::ValImpl.
   static const UInt maxUInt;
 
 #if defined(JSON_HAS_INT64)
-  /// Minimum signed 64 bits int value that can be stored in a Json::Value.
+  /// Minimum signed 64 bits int value that can be stored in a Json::ValImpl.
   static const Int64 minInt64;
-  /// Maximum signed 64 bits int value that can be stored in a Json::Value.
+  /// Maximum signed 64 bits int value that can be stored in a Json::ValImpl.
   static const Int64 maxInt64;
-  /// Maximum unsigned 64 bits int value that can be stored in a Json::Value.
+  /// Maximum unsigned 64 bits int value that can be stored in a Json::ValImpl.
   static const UInt64 maxUInt64;
 #endif // defined(JSON_HAS_INT64)
 
@@ -98,73 +98,50 @@ private:
 
 public:
 #ifndef JSON_USE_CPPTL_SMALLMAP
-  typedef std::map<CZString, Value> ObjectValues;
+  typedef std::map<CZString, ValImpl> ObjectValues;
 #else
-  typedef CppTL::SmallMap<CZString, Value> ObjectValues;
+  typedef CppTL::SmallMap<CZString, ValImpl> ObjectValues;
 #endif // ifndef JSON_USE_CPPTL_SMALLMAP
 #endif // ifndef JSON_VALUE_USE_INTERNAL_MAP
 #endif // ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
 
 public:
-  /** \brief Create a default Value of the given type.
-
-    This is a very useful constructor.
-    To create an empty array, pass arrayValue.
-    To create an empty object, pass objectValue.
-    Another Value can then be set to this one by assignment.
-This is useful since clear() and resize() will not alter types.
-
-    Examples:
-\code
-Json::Value null_value; // null
-Json::Value arr_value(Json::arrayValue); // []
-Json::Value obj_value(Json::objectValue); // {}
-\endcode
-  */
-  Value(ValueType type = nullValue);
-  Value(Int value);
-  Value(UInt value);
+  // Create a default Value of the given type.
+  ValImpl(ValueType type = nullValue);
+  ValImpl(Int value);
+  ValImpl(UInt value);
 #if defined(JSON_HAS_INT64)
-  Value(Int64 value);
-  Value(UInt64 value);
+  ValImpl(Int64 value);
+  ValImpl(UInt64 value);
 #endif // if defined(JSON_HAS_INT64)
-  Value(double value);
-  Value(const char* value);
-  Value(const char* beginValue, const char* endValue);
-  /** \brief Constructs a value from a static string.
-
-   * Like other value string constructor but do not duplicate the string for
-   * internal storage. The given string must remain alive after the call to this
-   * constructor.
-   * Example of usage:
-   * \code
-   * Json::Value aValue( StaticString("some text") );
-   * \endcode
-   */
-  Value(const StaticString& value);
-  Value(const std::string& value);
+  ValImpl(double value);
+  ValImpl(const char* value);
+  ValImpl(const char* beginValue, const char* endValue);
+  // Construct a value from a static string.
+  ValImpl(const StaticString& value);
+  ValImpl(const std::string& value);
 #ifdef JSON_USE_CPPTL
-  Value(const CppTL::ConstString& value);
+  ValImpl(const CppTL::ConstString& value);
 #endif
-  Value(bool value);
-  Value(const Value& other);
-  ~Value();
+  ValImpl(bool value);
+  ValImpl(const ValImpl& other);
+  ~ValImpl();
 
-  Value& operator=(Value other);
+  ValImpl& operator=(ValImpl other);
   /// Swap values.
-  void swap(Value& other);
+  void swap(ValImpl& other);
 
   ValueType type() const;
 
-  bool operator<(const Value& other) const;
-  bool operator<=(const Value& other) const;
-  bool operator>=(const Value& other) const;
-  bool operator>(const Value& other) const;
+  bool operator<(const ValImpl& other) const;
+  bool operator<=(const ValImpl& other) const;
+  bool operator>=(const ValImpl& other) const;
+  bool operator>(const ValImpl& other) const;
 
-  bool operator==(const Value& other) const;
-  bool operator!=(const Value& other) const;
+  bool operator==(const ValImpl& other) const;
+  bool operator!=(const ValImpl& other) const;
 
-  int compare(const Value& other) const;
+  int compare(const ValImpl& other) const;
 
   const char* asCString() const;
   std::string asString() const;
@@ -226,7 +203,7 @@ Json::Value obj_value(Json::objectValue); // {}
   /// in the array so that its size is index+1.
   /// (You may need to say 'value[0u]' to get your compiler to distinguish
   ///  this from the operator[] which takes a string.)
-  Value& operator[](ArrayIndex index);
+  ValImpl& operator[](ArrayIndex index);
 
   /// Access an array element (zero based index ).
   /// If the array contains less than index element, then null value are
@@ -234,66 +211,55 @@ Json::Value obj_value(Json::objectValue); // {}
   /// in the array so that its size is index+1.
   /// (You may need to say 'value[0u]' to get your compiler to distinguish
   ///  this from the operator[] which takes a string.)
-  Value& operator[](int index);
+  ValImpl& operator[](int index);
 
   /// Access an array element (zero based index )
   /// (You may need to say 'value[0u]' to get your compiler to distinguish
   ///  this from the operator[] which takes a string.)
-  const Value& operator[](ArrayIndex index) const;
+  const ValImpl& operator[](ArrayIndex index) const;
 
   /// Access an array element (zero based index )
   /// (You may need to say 'value[0u]' to get your compiler to distinguish
   ///  this from the operator[] which takes a string.)
-  const Value& operator[](int index) const;
+  const ValImpl& operator[](int index) const;
 
   /// If the array contains at least index+1 elements, returns the element
   /// value,
   /// otherwise returns defaultValue.
-  Value get(ArrayIndex index, const Value& defaultValue) const;
+  ValImpl get(ArrayIndex index, const Value& defaultValue) const;
   /// Return true if index < size().
   bool isValidIndex(ArrayIndex index) const;
   /// \brief Append value to array at the end.
   ///
   /// Equivalent to jsonvalue[jsonvalue.size()] = value;
-  Value& append(const Value& value);
+  ValImpl& append(const ValImpl& value);
 
   /// Access an object value by name, create a null member if it does not exist.
-  Value& operator[](const char* key);
+  ValImpl& operator[](const char* key);
   /// Access an object value by name, returns null if there is no member with
   /// that name.
-  const Value& operator[](const char* key) const;
+  const ValImpl& operator[](const char* key) const;
   /// Access an object value by name, create a null member if it does not exist.
-  Value& operator[](const std::string& key);
+  ValImpl& operator[](const std::string& key);
   /// Access an object value by name, returns null if there is no member with
   /// that name.
-  const Value& operator[](const std::string& key) const;
-  /** \brief Access an object value by name, create a null member if it does not
-   exist.
-
-   * If the object as no entry for that name, then the member name used to store
-   * the new entry is not duplicated.
-   * Example of use:
-   * \code
-   * Json::Value object;
-   * static const StaticString code("code");
-   * object[code] = 1234;
-   * \endcode
-   */
-  Value& operator[](const StaticString& key);
+  const ValImpl& operator[](const std::string& key) const;
+  // Access an object value by name, create a null member if it does not exist.
+  ValImpl& operator[](const StaticString& key);
 #ifdef JSON_USE_CPPTL
   /// Access an object value by name, create a null member if it does not exist.
-  Value& operator[](const CppTL::ConstString& key);
+  ValImpl& operator[](const CppTL::ConstString& key);
   /// Access an object value by name, returns null if there is no member with
   /// that name.
-  const Value& operator[](const CppTL::ConstString& key) const;
+  const ValImpl& operator[](const CppTL::ConstString& key) const;
 #endif
   /// Return the member named key if it exist, defaultValue otherwise.
-  Value get(const char* key, const Value& defaultValue) const;
+  ValImpl get(const char* key, const ValImpl& defaultValue) const;
   /// Return the member named key if it exist, defaultValue otherwise.
-  Value get(const std::string& key, const Value& defaultValue) const;
+  ValImpl get(const std::string& key, const ValImpl& defaultValue) const;
 #ifdef JSON_USE_CPPTL
   /// Return the member named key if it exist, defaultValue otherwise.
-  Value get(const CppTL::ConstString& key, const Value& defaultValue) const;
+  ValImpl get(const CppTL::ConstString& key, const ValImpl& defaultValue) const;
 #endif
   /// \brief Remove and return the named member.
   ///
@@ -301,9 +267,9 @@ Json::Value obj_value(Json::objectValue); // {}
   /// \return the removed Value, or null.
   /// \pre type() is objectValue or nullValue
   /// \post type() is unchanged
-  Value removeMember(const char* key);
+  ValImpl removeMember(const char* key);
   /// Same as removeMember(const char*)
-  Value removeMember(const std::string& key);
+  ValImpl removeMember(const std::string& key);
 
   /// Return true if the object has a member named key.
   bool isMember(const char* key) const;
@@ -352,10 +318,10 @@ Json::Value obj_value(Json::objectValue); // {}
 private:
   void initBasic(ValueType type, bool allocated = false);
 
-  Value& resolveReference(const char* key, bool isStatic);
+  ValImpl& resolveReference(const char* key, bool isStatic);
 
   /// Swap values but leave comments and source offsets in place.
-  void swapPayload(Value& other);
+  void swapPayload(ValImpl& other);
 
 #ifdef JSON_VALUE_USE_INTERNAL_MAP
   inline bool isItemAvailable() const { return itemIsUsed_ == 0; }
