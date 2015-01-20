@@ -84,6 +84,8 @@ private:
   const char* str_;
 };
 
+class ValImpl;
+
 /** \brief Represents a <a HREF="http://www.json.org">JSON</a> value.
  *
  * This class is a discriminated union wrapper that can represents a:
@@ -394,6 +396,9 @@ Json::ValWrapper obj_value(Json::objectValue); // {}
   void setOffsetLimit(size_t limit);
   size_t getOffsetStart() const;
   size_t getOffsetLimit() const;
+
+private:
+  ValImpl* impl_;
 };
 
 class JSON_API Value {
