@@ -503,12 +503,7 @@ private:
   size_t limit_;
 };
 
-class JSON_API Value {
-  friend class ValueIteratorBase;
-#ifdef JSON_VALUE_USE_INTERNAL_MAP
-  friend class ValueInternalLink;
-  friend class ValueInternalMap;
-#endif
+class JSON_API ValueWrapper {
 public:
   typedef std::vector<std::string> Members;
   typedef ValueIterator iterator;
@@ -547,43 +542,6 @@ public:
   static const UInt64 maxUInt64;
 #endif // defined(JSON_HAS_INT64)
 
-private:
-#ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
-#ifndef JSON_VALUE_USE_INTERNAL_MAP
-  class CZString {
-  public:
-    enum DuplicationPolicy {
-      noDuplication = 0,
-      duplicate,
-      duplicateOnCopy
-    };
-    CZString(ArrayIndex index);
-    CZString(const char* cstr, DuplicationPolicy allocate);
-    CZString(const CZString& other);
-    ~CZString();
-    CZString& operator=(CZString other);
-    bool operator<(const CZString& other) const;
-    bool operator==(const CZString& other) const;
-    ArrayIndex index() const;
-    const char* c_str() const;
-    bool isStaticString() const;
-
-  private:
-    void swap(CZString& other);
-    const char* cstr_;
-    ArrayIndex index_;
-  };
-
-public:
-#ifndef JSON_USE_CPPTL_SMALLMAP
-  typedef std::map<CZString, Value> ObjectValues;
-#else
-  typedef CppTL::SmallMap<CZString, Value> ObjectValues;
-#endif // ifndef JSON_USE_CPPTL_SMALLMAP
-#endif // ifndef JSON_VALUE_USE_INTERNAL_MAP
-#endif // ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
-
-public:
   /** \brief Create a default Value of the given type.
 
     This is a very useful constructor.
@@ -826,71 +784,6 @@ Json::Value obj_value(Json::objectValue); // {}
   void setOffsetLimit(size_t limit);
   size_t getOffsetStart() const;
   size_t getOffsetLimit() const;
-
-private:
-  void initBasic(ValueType type, bool allocated = false);
-
-  Value& resolveReference(const char* key, bool isStatic);
-
-  /// Swap values but leave comments and source offsets in place.
-  void swapPayload(Value& other);
-
-#ifdef JSON_VALUE_USE_INTERNAL_MAP
-  inline bool isItemAvailable() const { return itemIsUsed_ == 0; }
-
-  inline void setItemUsed(bool isUsed = true) { itemIsUsed_ = isUsed ? 1 : 0; }
-
-  inline bool isMemberNameStatic() const { return memberNameIsStatic_ == 0; }
-
-  inline void setMemberNameIsStatic(bool isStatic) {
-    memberNameIsStatic_ = isStatic ? 1 : 0;
-  }
-#endif // # ifdef JSON_VALUE_USE_INTERNAL_MAP
-
-private:
-  struct CommentInfo {
-    CommentInfo();
-    ~CommentInfo();
-
-    void setComment(const char* text);
-
-    char* comment_;
-  };
-
-  // struct MemberNamesTransform
-  //{
-  //   typedef const char *result_type;
-  //   const char *operator()( const CZString &name ) const
-  //   {
-  //      return name.c_str();
-  //   }
-  //};
-
-  union ValueHolder {
-    LargestInt int_;
-    LargestUInt uint_;
-    double real_;
-    bool bool_;
-    char* string_;
-#ifdef JSON_VALUE_USE_INTERNAL_MAP
-    ValueInternalArray* array_;
-    ValueInternalMap* map_;
-#else
-    ObjectValues* map_;
-#endif
-  } value_;
-  ValueType type_ : 8;
-  int allocated_ : 1; // Notes: if declared as bool, bitfield is useless.
-#ifdef JSON_VALUE_USE_INTERNAL_MAP
-  unsigned int itemIsUsed_ : 1; // used by the ValueInternalMap container.
-  int memberNameIsStatic_ : 1;  // used by the ValueInternalMap container.
-#endif
-  CommentInfo* comments_;
-
-  // [start, limit) byte offsets in the source JSON text from which this Value
-  // was extracted.
-  size_t start_;
-  size_t limit_;
 };
 
 /** \brief Experimental and untested: represents an element of the "path" to
