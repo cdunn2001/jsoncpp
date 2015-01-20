@@ -503,7 +503,7 @@ private:
   size_t limit_;
 };
 
-class JSON_API ValueWrapper {
+class JSON_API ValWrapper {
 public:
   typedef std::vector<std::string> Members;
   typedef ValueIterator iterator;
@@ -518,27 +518,27 @@ public:
   typedef Json::LargestUInt LargestUInt;
   typedef Json::ArrayIndex ArrayIndex;
 
-  static const Value& null;
-  /// Minimum signed integer value that can be stored in a Json::Value.
+  static const ValWrapper& null;
+  /// Minimum signed integer value that can be stored in a Json::ValWrapper.
   static const LargestInt minLargestInt;
-  /// Maximum signed integer value that can be stored in a Json::Value.
+  /// Maximum signed integer value that can be stored in a Json::ValWrapper.
   static const LargestInt maxLargestInt;
-  /// Maximum unsigned integer value that can be stored in a Json::Value.
+  /// Maximum unsigned integer value that can be stored in a Json::ValWrapper.
   static const LargestUInt maxLargestUInt;
 
-  /// Minimum signed int value that can be stored in a Json::Value.
+  /// Minimum signed int value that can be stored in a Json::ValWrapper.
   static const Int minInt;
-  /// Maximum signed int value that can be stored in a Json::Value.
+  /// Maximum signed int value that can be stored in a Json::ValWrapper.
   static const Int maxInt;
-  /// Maximum unsigned int value that can be stored in a Json::Value.
+  /// Maximum unsigned int value that can be stored in a Json::ValWrapper.
   static const UInt maxUInt;
 
 #if defined(JSON_HAS_INT64)
-  /// Minimum signed 64 bits int value that can be stored in a Json::Value.
+  /// Minimum signed 64 bits int value that can be stored in a Json::ValWrapper.
   static const Int64 minInt64;
-  /// Maximum signed 64 bits int value that can be stored in a Json::Value.
+  /// Maximum signed 64 bits int value that can be stored in a Json::ValWrapper.
   static const Int64 maxInt64;
-  /// Maximum unsigned 64 bits int value that can be stored in a Json::Value.
+  /// Maximum unsigned 64 bits int value that can be stored in a Json::ValWrapper.
   static const UInt64 maxUInt64;
 #endif // defined(JSON_HAS_INT64)
 
@@ -552,21 +552,21 @@ This is useful since clear() and resize() will not alter types.
 
     Examples:
 \code
-Json::Value null_value; // null
-Json::Value arr_value(Json::arrayValue); // []
-Json::Value obj_value(Json::objectValue); // {}
+Json::ValWrapper null_value; // null
+Json::ValWrapper arr_value(Json::arrayValue); // []
+Json::ValWrapper obj_value(Json::objectValue); // {}
 \endcode
   */
-  Value(ValueType type = nullValue);
-  Value(Int value);
-  Value(UInt value);
+  ValWrapper(ValueType type = nullValue);
+  ValWrapper(Int value);
+  ValWrapper(UInt value);
 #if defined(JSON_HAS_INT64)
-  Value(Int64 value);
-  Value(UInt64 value);
+  ValWrapper(Int64 value);
+  ValWrapper(UInt64 value);
 #endif // if defined(JSON_HAS_INT64)
-  Value(double value);
-  Value(const char* value);
-  Value(const char* beginValue, const char* endValue);
+  ValWrapper(double value);
+  ValWrapper(const char* value);
+  ValWrapper(const char* beginValue, const char* endValue);
   /** \brief Constructs a value from a static string.
 
    * Like other value string constructor but do not duplicate the string for
@@ -574,33 +574,33 @@ Json::Value obj_value(Json::objectValue); // {}
    * constructor.
    * Example of usage:
    * \code
-   * Json::Value aValue( StaticString("some text") );
+   * Json::ValWrapper aValWrapper( StaticString("some text") );
    * \endcode
    */
-  Value(const StaticString& value);
-  Value(const std::string& value);
+  ValWrapper(const StaticString& value);
+  ValWrapper(const std::string& value);
 #ifdef JSON_USE_CPPTL
-  Value(const CppTL::ConstString& value);
+  ValWrapper(const CppTL::ConstString& value);
 #endif
-  Value(bool value);
-  Value(const Value& other);
-  ~Value();
+  ValWrapper(bool value);
+  ValWrapper(const ValWrapper& other);
+  ~ValWrapper();
 
-  Value& operator=(Value other);
+  ValWrapper& operator=(ValWrapper other);
   /// Swap values.
-  void swap(Value& other);
+  void swap(ValWrapper& other);
 
   ValueType type() const;
 
-  bool operator<(const Value& other) const;
-  bool operator<=(const Value& other) const;
-  bool operator>=(const Value& other) const;
-  bool operator>(const Value& other) const;
+  bool operator<(const ValWrapper& other) const;
+  bool operator<=(const ValWrapper& other) const;
+  bool operator>=(const ValWrapper& other) const;
+  bool operator>(const ValWrapper& other) const;
 
-  bool operator==(const Value& other) const;
-  bool operator!=(const Value& other) const;
+  bool operator==(const ValWrapper& other) const;
+  bool operator!=(const ValWrapper& other) const;
 
-  int compare(const Value& other) const;
+  int compare(const ValWrapper& other) const;
 
   const char* asCString() const;
   std::string asString() const;
@@ -662,7 +662,7 @@ Json::Value obj_value(Json::objectValue); // {}
   /// in the array so that its size is index+1.
   /// (You may need to say 'value[0u]' to get your compiler to distinguish
   ///  this from the operator[] which takes a string.)
-  Value& operator[](ArrayIndex index);
+  ValWrapper& operator[](ArrayIndex index);
 
   /// Access an array element (zero based index ).
   /// If the array contains less than index element, then null value are
@@ -670,39 +670,39 @@ Json::Value obj_value(Json::objectValue); // {}
   /// in the array so that its size is index+1.
   /// (You may need to say 'value[0u]' to get your compiler to distinguish
   ///  this from the operator[] which takes a string.)
-  Value& operator[](int index);
+  ValWrapper& operator[](int index);
 
   /// Access an array element (zero based index )
   /// (You may need to say 'value[0u]' to get your compiler to distinguish
   ///  this from the operator[] which takes a string.)
-  const Value& operator[](ArrayIndex index) const;
+  const ValWrapper& operator[](ArrayIndex index) const;
 
   /// Access an array element (zero based index )
   /// (You may need to say 'value[0u]' to get your compiler to distinguish
   ///  this from the operator[] which takes a string.)
-  const Value& operator[](int index) const;
+  const ValWrapper& operator[](int index) const;
 
   /// If the array contains at least index+1 elements, returns the element
   /// value,
   /// otherwise returns defaultValue.
-  Value get(ArrayIndex index, const Value& defaultValue) const;
+  ValWrapper get(ArrayIndex index, const ValWrapper& defaultValue) const;
   /// Return true if index < size().
   bool isValidIndex(ArrayIndex index) const;
   /// \brief Append value to array at the end.
   ///
   /// Equivalent to jsonvalue[jsonvalue.size()] = value;
-  Value& append(const Value& value);
+  ValWrapper& append(const ValWrapper& value);
 
   /// Access an object value by name, create a null member if it does not exist.
-  Value& operator[](const char* key);
+  ValWrapper& operator[](const char* key);
   /// Access an object value by name, returns null if there is no member with
   /// that name.
-  const Value& operator[](const char* key) const;
+  const ValWrapper& operator[](const char* key) const;
   /// Access an object value by name, create a null member if it does not exist.
-  Value& operator[](const std::string& key);
+  ValWrapper& operator[](const std::string& key);
   /// Access an object value by name, returns null if there is no member with
   /// that name.
-  const Value& operator[](const std::string& key) const;
+  const ValWrapper& operator[](const std::string& key) const;
   /** \brief Access an object value by name, create a null member if it does not
    exist.
 
@@ -710,26 +710,26 @@ Json::Value obj_value(Json::objectValue); // {}
    * the new entry is not duplicated.
    * Example of use:
    * \code
-   * Json::Value object;
+   * Json::ValWrapper object;
    * static const StaticString code("code");
    * object[code] = 1234;
    * \endcode
    */
-  Value& operator[](const StaticString& key);
+  ValWrapper& operator[](const StaticString& key);
 #ifdef JSON_USE_CPPTL
   /// Access an object value by name, create a null member if it does not exist.
-  Value& operator[](const CppTL::ConstString& key);
+  ValWrapper& operator[](const CppTL::ConstString& key);
   /// Access an object value by name, returns null if there is no member with
   /// that name.
-  const Value& operator[](const CppTL::ConstString& key) const;
+  const ValWrapper& operator[](const CppTL::ConstString& key) const;
 #endif
   /// Return the member named key if it exist, defaultValue otherwise.
-  Value get(const char* key, const Value& defaultValue) const;
-  /// Return the member named key if it exist, defaultValue otherwise.
-  Value get(const std::string& key, const Value& defaultValue) const;
+  ValWrapper get(const char* key, const ValWrapper& defaultValue) const;
+  /// Return the member named key if it exist, defaultValWrapper otherwise.
+  ValWrapper get(const std::string& key, const ValWrapper& defaultValue) const;
 #ifdef JSON_USE_CPPTL
-  /// Return the member named key if it exist, defaultValue otherwise.
-  Value get(const CppTL::ConstString& key, const Value& defaultValue) const;
+  /// Return the member named key if it exist, defaultValWrapper otherwise.
+  ValWrapper get(const CppTL::ConstString& key, const ValWrapper& defaultValue) const;
 #endif
   /// \brief Remove and return the named member.
   ///
@@ -737,9 +737,9 @@ Json::Value obj_value(Json::objectValue); // {}
   /// \return the removed Value, or null.
   /// \pre type() is objectValue or nullValue
   /// \post type() is unchanged
-  Value removeMember(const char* key);
+  ValWrapper removeMember(const char* key);
   /// Same as removeMember(const char*)
-  Value removeMember(const std::string& key);
+  ValWrapper removeMember(const std::string& key);
 
   /// Return true if the object has a member named key.
   bool isMember(const char* key) const;
