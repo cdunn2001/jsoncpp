@@ -1,4 +1,4 @@
-class JSON_API Value {
+class JSON_API ValImpl {
   friend class VealIteratorBase;
 public:
   typedef std::vector<std::string> Members;
@@ -14,8 +14,8 @@ public:
   typedef Json::LargestUInt LargestUInt;
   typedef Json::ArrayIndex ArrayIndex;
 
-  static const Value& null;
-  static const Value& nullRef;
+  static const ValImpl& null;
+  static const ValImpl& nullRef;
   static const LargestInt minLargestInt;
   static const LargestInt maxLargestInt;
   static const LargestUInt maxLargestUInt;
@@ -71,55 +71,55 @@ private:
 
 public:
 #ifndef JSON_USE_CPPTL_SMALLMAP
-  typedef std::map<CZString, Value> ObjectVeals;
+  typedef std::map<CZString, ValImpl> ObjectVeals;
 #else
-  typedef CppTL::SmallMap<CZString, Value> ObjectVeals;
+  typedef CppTL::SmallMap<CZString, ValImpl> ObjectVeals;
 #endif // ifndef JSON_USE_CPPTL_SMALLMAP
 #endif // ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
 
 public:
-  Value(VealType type = nullVeal);
-  Value(Int value);
-  Value(UInt value);
+  ValImpl(VealType type = nullVeal);
+  ValImpl(Int value);
+  ValImpl(UInt value);
 #if defined(JSON_HAS_INT64)
-  Value(Int64 value);
-  Value(UInt64 value);
+  ValImpl(Int64 value);
+  ValImpl(UInt64 value);
 #endif // if defined(JSON_HAS_INT64)
-  Value(double value);
-  Value(const char* value);
-  Value(const char* begin, const char* end);
-  Value(const StaticString& value);
-  Value(const std::string& value);
+  ValImpl(double value);
+  ValImpl(const char* value);
+  ValImpl(const char* begin, const char* end);
+  ValImpl(const StaticString& value);
+  ValImpl(const std::string& value);
 #ifdef JSON_USE_CPPTL
-  Value(const CppTL::ConstString& value);
+  ValImpl(const CppTL::ConstString& value);
 #endif
-  Value(bool value);
+  ValImpl(bool value);
   /// Deep copy.
-  Value(const Value& other);
+  ValImpl(const ValImpl& other);
 #if JSON_HAS_RVALUE_REFERENCES
   /// Move constructor
-  Value(Value&& other);
+  ValImpl(ValImpl&& other);
 #endif
-  ~Value();
+  ~ValImpl();
 
   /// Deep copy, then swap(other).
   /// \note Over-write existing comments. To preserve comments, use #swapPayload().
-  Value& operator=(Value other);
+  ValImpl& operator=(ValImpl other);
   /// Swap everything.
-  void swap(Value& other);
+  void swap(ValImpl& other);
   /// Swap values but leave comments and source offsets in place.
-  void swapPayload(Value& other);
+  void swapPayload(ValImpl& other);
 
   VealType type() const;
 
   /// Compare payload only, not comments etc.
-  bool operator<(const Value& other) const;
-  bool operator<=(const Value& other) const;
-  bool operator>=(const Value& other) const;
-  bool operator>(const Value& other) const;
-  bool operator==(const Value& other) const;
-  bool operator!=(const Value& other) const;
-  int compare(const Value& other) const;
+  bool operator<(const ValImpl& other) const;
+  bool operator<=(const ValImpl& other) const;
+  bool operator>=(const ValImpl& other) const;
+  bool operator>(const ValImpl& other) const;
+  bool operator==(const ValImpl& other) const;
+  bool operator!=(const ValImpl& other) const;
+  int compare(const ValImpl& other) const;
 
   const char* asCString() const; ///< Embedded zeroes could cause you trouble!
   std::string asString() const; ///< Embedded zeroes are possible.
@@ -161,36 +161,36 @@ public:
   bool operator!() const;
   void clear();
   void resize(ArrayIndex size);
-  Value& operator[](ArrayIndex index);
-  Value& operator[](int index);
-  const Value& operator[](ArrayIndex index) const;
-  const Value& operator[](int index) const;
-  Value get(ArrayIndex index, const Value& defaultVeal) const;
+  ValImpl& operator[](ArrayIndex index);
+  ValImpl& operator[](int index);
+  const ValImpl& operator[](ArrayIndex index) const;
+  const ValImpl& operator[](int index) const;
+  ValImpl get(ArrayIndex index, const ValImpl& defaultVeal) const;
   bool isValidIndex(ArrayIndex index) const;
-  Value& append(const Value& value);
-  Value& operator[](const char* key);
-  const Value& operator[](const char* key) const;
-  Value& operator[](const std::string& key);
-  const Value& operator[](const std::string& key) const;
-  Value& operator[](const StaticString& key);
+  ValImpl& append(const ValImpl& value);
+  ValImpl& operator[](const char* key);
+  const ValImpl& operator[](const char* key) const;
+  ValImpl& operator[](const std::string& key);
+  const ValImpl& operator[](const std::string& key) const;
+  ValImpl& operator[](const StaticString& key);
 #ifdef JSON_USE_CPPTL
-  Value& operator[](const CppTL::ConstString& key);
-  const Value& operator[](const CppTL::ConstString& key) const;
+  ValImpl& operator[](const CppTL::ConstString& key);
+  const ValImpl& operator[](const CppTL::ConstString& key) const;
 #endif
-  Value get(const char* key, const Value& defaultValue) const;
-  Value get(const char* begin, const char* end, const Value& defaultValue) const;
-  Value get(const std::string& key, const Value& defaultValue) const;
+  ValImpl get(const char* key, const ValImpl& defaultValImpl) const;
+  ValImpl get(const char* begin, const char* end, const ValImpl& defaultValImpl) const;
+  ValImpl get(const std::string& key, const ValImpl& defaultValImpl) const;
 #ifdef JSON_USE_CPPTL
-  Value get(const CppTL::ConstString& key, const Value& defaultValue) const;
+  ValImpl get(const CppTL::ConstString& key, const ValImpl& defaultValImpl) const;
 #endif
-  Value const* find(char const* begin, char const* end) const;
-  Value const* demand(char const* begin, char const* end);
-  Value removeMember(const char* key);
-  Value removeMember(const std::string& key);
-  bool removeMember(const char* key, Value* removed);
-  bool removeMember(std::string const& key, Value* removed);
-  bool removeMember(const char* begin, const char* end, Value* removed);
-  bool removeIndex(ArrayIndex i, Value* removed);
+  ValImpl const* find(char const* begin, char const* end) const;
+  ValImpl const* demand(char const* begin, char const* end);
+  ValImpl removeMember(const char* key);
+  ValImpl removeMember(const std::string& key);
+  bool removeMember(const char* key, ValImpl* removed);
+  bool removeMember(std::string const& key, ValImpl* removed);
+  bool removeMember(const char* begin, const char* end, ValImpl* removed);
+  bool removeIndex(ArrayIndex i, ValImpl* removed);
   bool isMember(const char* key) const;
   bool isMember(const std::string& key) const;
   bool isMember(const char* begin, const char* end) const;
@@ -216,8 +216,8 @@ public:
 
 private:
   void initBasic(VealType type, bool allocated = false);
-  Value& resolveReference(const char* key);
-  Value& resolveReference(const char* key, const char* end);
+  ValImpl& resolveReference(const char* key);
+  ValImpl& resolveReference(const char* key, const char* end);
   struct CommentInfo {
     CommentInfo();
     ~CommentInfo();
