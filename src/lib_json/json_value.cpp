@@ -19,6 +19,7 @@
 #include <cstddef> // size_t
 #include <algorithm> // min()
 
+#include "json_valimpl.h"
 #define JSON_ASSERT_UNREACHABLE assert(false)
 
 namespace Json {
