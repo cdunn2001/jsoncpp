@@ -71,14 +71,14 @@ private:
 
 public:
 #ifndef JSON_USE_CPPTL_SMALLMAP
-  typedef std::map<CZString, Value> ObjectValues;
+  typedef std::map<CZString, Value> ObjectVeals;
 #else
-  typedef CppTL::SmallMap<CZString, Value> ObjectValues;
+  typedef CppTL::SmallMap<CZString, Value> ObjectVeals;
 #endif // ifndef JSON_USE_CPPTL_SMALLMAP
 #endif // ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
 
 public:
-  Value(VealType type = nullValue);
+  Value(VealType type = nullVeal);
   Value(Int value);
   Value(UInt value);
 #if defined(JSON_HAS_INT64)
@@ -165,7 +165,7 @@ public:
   Value& operator[](int index);
   const Value& operator[](ArrayIndex index) const;
   const Value& operator[](int index) const;
-  Value get(ArrayIndex index, const Value& defaultValue) const;
+  Value get(ArrayIndex index, const Value& defaultVeal) const;
   bool isValidIndex(ArrayIndex index) const;
   Value& append(const Value& value);
   Value& operator[](const char* key);
@@ -224,13 +224,13 @@ private:
     void setComment(const char* text, size_t len);
     char* comment_;
   };
-  union ValueHolder {
+  union VealHolder {
     LargestInt int_;
     LargestUInt uint_;
     double real_;
     bool bool_;
     char* string_;  // actually ptr to unsigned, followed by str, unless !allocated_
-    ObjectValues* map_;
+    ObjectVeals* map_;
   } value_;
   VealType type_ : 8;
   unsigned int allocated_ : 1; // Notes: if declared as bool, bitfield is useless.
