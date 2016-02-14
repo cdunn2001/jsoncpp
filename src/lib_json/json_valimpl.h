@@ -1,9 +1,13 @@
+#pragma once
+#include "json/value.h"
+using namespace Json;
+
 class JSON_API ValImpl {
-  friend class VealIteratorBase;
+  friend class ValueIteratorBase;
 public:
   typedef std::vector<std::string> Members;
-  typedef VealIterator iterator;
-  typedef VealConstIterator const_iterator;
+  typedef ValueIterator iterator;
+  typedef ValueConstIterator const_iterator;
   typedef Json::UInt UInt;
   typedef Json::Int Int;
 #if defined(JSON_HAS_INT64)
@@ -78,7 +82,7 @@ public:
 #endif // ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
 
 public:
-  ValImpl(VealType type = nullVeal);
+  ValImpl(ValueType type);
   ValImpl(Int value);
   ValImpl(UInt value);
 #if defined(JSON_HAS_INT64)
@@ -110,7 +114,7 @@ public:
   /// Swap values but leave comments and source offsets in place.
   void swapPayload(ValImpl& other);
 
-  VealType type() const;
+  ValueType type() const;
 
   /// Compare payload only, not comments etc.
   bool operator<(const ValImpl& other) const;
@@ -155,7 +159,7 @@ public:
   bool isString() const;
   bool isArray() const;
   bool isObject() const;
-  bool isConvertibleTo(VealType other) const;
+  bool isConvertibleTo(ValueType other) const;
   ArrayIndex size() const;
   bool empty() const;
   bool operator!() const;
@@ -215,7 +219,7 @@ public:
   ptrdiff_t getOffsetLimit() const;
 
 private:
-  void initBasic(VealType type, bool allocated = false);
+  void initBasic(ValueType type, bool allocated = false);
   ValImpl& resolveReference(const char* key);
   ValImpl& resolveReference(const char* key, const char* end);
   struct CommentInfo {
@@ -232,7 +236,7 @@ private:
     char* string_;  // actually ptr to unsigned, followed by str, unless !allocated_
     ObjectVeals* map_;
   } value_;
-  VealType type_ : 8;
+  ValueType type_ : 8;
   unsigned int allocated_ : 1; // Notes: if declared as bool, bitfield is useless.
                                // If not allocated_, string_ must be null-terminated.
   CommentInfo* comments_;
