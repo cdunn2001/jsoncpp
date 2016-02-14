@@ -1,6 +1,7 @@
 #pragma once
 #include "json/value.h"
-using namespace Json;
+
+namespace Json {
 
 class JSON_API ValImpl {
   friend class ValueIteratorBase;
@@ -75,9 +76,9 @@ private:
 
 public:
 #ifndef JSON_USE_CPPTL_SMALLMAP
-  typedef std::map<CZString, ValImpl> ObjectVeals;
+  typedef std::map<CZString, ValImpl> ObjectValues;
 #else
-  typedef CppTL::SmallMap<CZString, ValImpl> ObjectVeals;
+  typedef CppTL::SmallMap<CZString, ValImpl> ObjectValues;
 #endif // ifndef JSON_USE_CPPTL_SMALLMAP
 #endif // ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
 
@@ -234,7 +235,7 @@ private:
     double real_;
     bool bool_;
     char* string_;  // actually ptr to unsigned, followed by str, unless !allocated_
-    ObjectVeals* map_;
+    ObjectValues* map_;
   } value_;
   ValueType type_ : 8;
   unsigned int allocated_ : 1; // Notes: if declared as bool, bitfield is useless.
@@ -243,3 +244,5 @@ private:
   ptrdiff_t start_;
   ptrdiff_t limit_;
 };
+
+} // Json::
